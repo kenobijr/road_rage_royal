@@ -1,7 +1,7 @@
 # importing the module single to be able to change color mode on module level to rgb
 import turtle
 from turtle import Turtle
-from helpers import random_color, gen_ran_y
+from helpers import random_color, create_car_batch
 from screen import SCREEN_WIDTH
 from typing import List, Tuple
 # change color mode on module level
@@ -27,12 +27,16 @@ class CarManager:
         self.move_distance: int = 5
         # value for upper boundary of new generated car batch; increases with game difficulty
         self.car_batch_max: int = 3
+        # value for bottom boundary of new generated car batch; increases with game difficulty
+        self.car_batch_min: int = 0
         # gap in px along x-axis between car batches
-        self.car_batch_gap: int = 80
+        self.car_batch_x_gap: int = 80
+        # gap in px along y-axis between single cars within a batch
+        self.car_batch_y_gap: int = 25
         # genesis x cor for new car batches; beyond the screen on the right side
-        self.x_genesis_cor: float = (SCREEN_WIDTH / 2) + 20
+        self.x_genesis_cor: int = int((SCREEN_WIDTH / 2) + 20)
         # cars going beyond this x cor (out of screen) are wrecked
-        self.x_wrecking_cor: float = -(SCREEN_WIDTH / 2) - 20
+        self.x_wrecking_cor: int = int(-(SCREEN_WIDTH / 2) - 20)
         # add first batch of cars on initiating car manager
         self.add_cars()
 
@@ -46,31 +50,24 @@ class CarManager:
         """
         # for empty car_container create new batch always
         if not self.car_container:
-            new_car_positions: List[Tuple[int, int]] = self.gen_car_positions(self.car_batch_max)
+            new_car_positions: List[Tuple[int, int]] = create_car_batch(
+                self.car_batch_min,
+                self.car_batch_max,
+                self.car_batch_y_gap,
+                self.x_genesis_cor
+            )
             self.render_cars(new_car_positions)
         else:
             # determine x-coordinate of rightmost car
             rightmost_x: float = max(car.xcor() for car in self.car_container)
             # only add cars after min gap on x-axis
-            if rightmost_x < self.x_genesis_cor - self.car_batch_gap:
-                new_car_positions: List[Tuple[int, int]] = self.gen_car_positions(self.car_batch_max)
+            if rightmost_x < self.x_genesis_cor - self.car_batch_x_gap:
+                new_car_positions: List[Tuple[int, int]] = create_car_batch(
+                    self.car_batch_min,
+                    self.car_batch_max,
+                    self.car_batch_y_gap,
+                    self.x_genesis_cor)
                 self.render_cars(new_car_positions)
-
-    def gen_car_positions(self, car_batch_max: int) -> List[Tuple[int, int]]:
-        """
-        - generates list of tuples with coordinates of cars for a car batch
-        - uses helper function gen_ran_y to first receive list of ints for the distributed distinct y-coordinates
-        - returns a list of tuples with car coordinates for the batch
-        """
-        car_coordinates: List[Tuple[int, int]] = []
-        # get random amount of y coordinates as list of ints
-        car_batch_y_coordinates: List[int] = gen_ran_y(car_batch_max=car_batch_max, min_space=25)
-        # generate a coordinate tuple for each y-coordinate and constant genesis x-coordinate
-        for y_cor in car_batch_y_coordinates:
-            # type casting x-genesis-coordinate into int for consistency
-            new_pos_tuple: Tuple[int, int] = (int(self.x_genesis_cor), y_cor)
-            car_coordinates.append(new_pos_tuple)
-        return car_coordinates
 
     def render_cars(self, car_coordinates: List[Tuple[int, int]]) -> None:
         """
@@ -118,6 +115,7 @@ class CarManager:
             car.clear()
         self.car_container.clear()
         self.car_batch_max = 3
+        self.car_batch_min = 0
         self.speed = 0.2
 
 

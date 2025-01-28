@@ -41,6 +41,7 @@ class Game:
                 self.player.beam()
                 # increase difficulty
                 self.cars.car_batch_max += 1
+                self.cars.car_batch_min += 1
                 self.cars.speed *= 0.9
 
     def reset(self) -> None:
