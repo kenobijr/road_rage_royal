@@ -27,6 +27,12 @@ class Scoreboard(Turtle):
         self.clear()
         self.render_level()
 
+    def reset_level(self) -> None:
+        """reset level after game restart"""
+        self.level: int = 1
+        self.clear()
+        self.render_level()
+
     def game_over(self) -> None:
         """show big game over message in center of UI"""
         self.goto(0, 0)

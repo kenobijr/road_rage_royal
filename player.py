@@ -23,7 +23,7 @@ class Player(Turtle):
         new_y: int = int(self.ycor()) + MOVE_DISTANCE
         self.goto(int(self.xcor()), new_y)
 
-    def level_up(self) -> None:
+    def beam(self) -> None:
         """
         teleports the player to start position again when leveling up
         """

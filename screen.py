@@ -31,4 +31,5 @@ def init_screen() -> Screen:
     helper.write("Cross line to teleport", align=TEXT_ALIGNMENT, font=(FONT_TYPE, 18, FONT_STYLE))
     # delete object reference to make garbage collector delete the turtle object
     del helper
+
     return screen

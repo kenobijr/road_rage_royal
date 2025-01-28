@@ -102,7 +102,23 @@ class CarManager:
         - delete all cars crossing the left screen border
         - determined by the x-wrecking-coordinate as boundary
         """
+        # Iterate through cars and clean up those that need to be wrecked
         for car in self.car_container:
             # check if cars need to be wrecked due to crossing the left screen border
             if car.xcor() < self.x_wrecking_cor:
-                del car
+                car.hideturtle()
+                car.clear()
+        # filter out cars that are wrecked and rebuild the container
+        self.car_container = [car for car in self.car_container if car.xcor() >= self.x_wrecking_cor]
+
+    def reset(self) -> None:
+        """ delete all cars for game restart"""
+        for car in self.car_container:
+            car.hideturtle()
+            car.clear()
+        self.car_container.clear()
+        self.car_batch_max = 3
+        self.speed = 0.2
+
+
+
