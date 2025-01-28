@@ -1,0 +1,18 @@
+# Virtual environment
+.venv/
+env/
+venv/
+
+# Python files
+__pychache__/
+*.py[cod]
+.pytest_cache/
+
+# PyCharm files
+.idea/
+
+# macOS system files
+.DS_Store
+
+# Logs
+*.log
