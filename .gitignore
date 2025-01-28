@@ -3,6 +3,9 @@
 env/
 venv/
 
+# python version from pyenv
+.python-version
+
 # Python files
 __pychache__/
 *.py[cod]
