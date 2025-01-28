@@ -3,8 +3,8 @@ from car_manager import CarManager
 from scoreboard import Scoreboard
 import time
 from screen import init_screen, TOP_BOUNDARY
-import sys
-print(sys.executable)
+#import sys
+#print(sys.executable)
 
 
 def main() -> None:

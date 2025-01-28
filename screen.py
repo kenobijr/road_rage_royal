@@ -1,16 +1,16 @@
 from turtle import Screen, Turtle
 
-SCREEN_WIDTH = 600
-SCREEN_HEIGHT = 600
-TOP_BOUNDARY = 250
-BOTTOM_BOUNDARY = -240
+SCREEN_WIDTH: int = 600
+SCREEN_HEIGHT: int = 600
+TOP_BOUNDARY: int = 250
+BOTTOM_BOUNDARY: int = -240
 
-TEXT_ALIGNMENT = "left"
-FONT_TYPE = "Courier"
-FONT_STYLE = "normal"
+TEXT_ALIGNMENT: str = "left"
+FONT_TYPE: str = "Courier"
+FONT_STYLE: str = "normal"
 
 
-def init_screen():
+def init_screen() -> Screen:
     """managing screen logic and write instructions (all but gameboard)"""
     screen = Screen()
     screen.setup(width=SCREEN_WIDTH, height=SCREEN_HEIGHT)
