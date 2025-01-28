@@ -3,24 +3,23 @@ from car_manager import CarManager
 from scoreboard import Scoreboard
 import time
 from screen import init_screen, TOP_BOUNDARY
-#import sys
-#print(sys.executable)
+from turtle import Screen, Turtle
 
 
 def main() -> None:
-    """init screen; init game objects from classes; run game loop"""
-    screen = init_screen()
+    """init game screen and objects, sets up event listeners, runs game loop"""
+    screen: Screen = init_screen()
     # create game objects
-    player = Player()
-    cars = CarManager()
-    scoreboard = Scoreboard()
+    player: Player = Player()
+    cars: CarManager = CarManager()
+    scoreboard: Scoreboard = Scoreboard()
     # render screen manually first time
     screen.update()
     # add event listeners for up key
     screen.listen()
     screen.onkey(player.move_up, "Up")
     # start game loop
-    game_is_running = True
+    game_is_running: bool = True
     while game_is_running:
         # get value from cars class dictating game speed
         time.sleep(cars.speed)
@@ -33,7 +32,7 @@ def main() -> None:
         for car in cars.car_container:
             # distance is measuring from the center point of stretched car -> 20px
             if player.distance(car) < 20:
-                game_is_running = False
+                game_is_running: bool = False
                 scoreboard.game_over()
         # check if turtle crossed upper boundary to teleport (top boundary + 10 for half turtle size -2 for 2 lines)
         if player.ycor() > TOP_BOUNDARY + 8:
