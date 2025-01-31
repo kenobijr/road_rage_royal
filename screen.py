@@ -16,6 +16,7 @@ def init_screen() -> Screen:
     screen.setup(width=SCREEN_WIDTH, height=SCREEN_HEIGHT)
     screen.title("A turtle crossing tale...")
     screen.tracer(0)
+    screen.register_shape("car.gif")
     # draw start and end line
     helper = Turtle()
     helper.teleport(-300, BOTTOM_BOUNDARY)

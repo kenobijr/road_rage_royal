@@ -35,7 +35,7 @@ class Game:
                 if self.player.distance(car) < 20:
                     game_is_running: bool = False
             # check if turtle crossed upper boundary to teleport (top boundary + 10 for half turtle size -2 for 2 lines)
-            if self.player.ycor() > TOP_BOUNDARY + 8:
+            if self.player.ycor() > TOP_BOUNDARY + 10:
                 self.scoreboard.increase_level()
                 # teleport player back to start point
                 self.player.beam()
@@ -55,6 +55,7 @@ class Game:
         """adds and activates event listeners for keys"""
         self.screen.listen()
         self.screen.onkey(self.player.move_up, "Up")
+        self.screen.onkey(self.player.move_down, "Down")
 
     def play(self):
         """starts the game and handles the restart logic"""

@@ -50,24 +50,24 @@ class CarManager:
         """
         # for empty car_container create new batch always
         if not self.car_container:
-            new_car_positions: List[Tuple[int, int]] = create_car_batch(
+            car_batch: List[Tuple[int, int]] = create_car_batch(
                 self.car_batch_min,
                 self.car_batch_max,
                 self.car_batch_y_gap,
                 self.x_genesis_cor
             )
-            self.render_cars(new_car_positions)
+            self.render_cars(car_batch)
         else:
             # determine x-coordinate of rightmost car
             rightmost_x: float = max(car.xcor() for car in self.car_container)
             # only add cars after min gap on x-axis
             if rightmost_x < self.x_genesis_cor - self.car_batch_x_gap:
-                new_car_positions: List[Tuple[int, int]] = create_car_batch(
+                car_batch: List[Tuple[int, int]] = create_car_batch(
                     self.car_batch_min,
                     self.car_batch_max,
                     self.car_batch_y_gap,
                     self.x_genesis_cor)
-                self.render_cars(new_car_positions)
+                self.render_cars(car_batch)
 
     def render_cars(self, car_coordinates: List[Tuple[int, int]]) -> None:
         """
@@ -117,6 +117,3 @@ class CarManager:
         self.car_batch_max = 3
         self.car_batch_min = 0
         self.speed = 0.2
-
-
-
