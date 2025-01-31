@@ -4,6 +4,7 @@ from scoreboard import Scoreboard
 import time
 from screen import init_screen, TOP_BOUNDARY
 from turtle import Screen, Turtle
+from helpers import check_collision
 
 
 class Game:
@@ -30,10 +31,8 @@ class Game:
             self.cars.add_cars()
             self.cars.wreck_cars()
             # check if player crashed with car, game over;
-            for car in self.cars.car_container:
-                # distance is measuring from the center point of stretched car -> 20px
-                if self.player.distance(car) < 20:
-                    game_is_running: bool = False
+            if check_collision(self.player, self.cars.car_container):
+                game_is_running: bool = False
             # check if turtle crossed upper boundary to teleport (top boundary + 10 for half turtle size -2 for 2 lines)
             if self.player.ycor() > TOP_BOUNDARY + 10:
                 self.scoreboard.increase_level()

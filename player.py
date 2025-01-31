@@ -9,7 +9,7 @@ PLAYER_HEIGHT: int = 30
 PLAYER_START_X: int = 0
 PLAYER_START_Y: int = -265
 # player direction in degrees
-PLAYER_DIRECTION = 90
+PLAYER_DIRECTION: int = 90
 
 
 class Player(Turtle):

@@ -1,6 +1,13 @@
 from random import randint
 from screen import TOP_BOUNDARY, BOTTOM_BOUNDARY
+from player import PLAYER_WIDTH, PLAYER_HEIGHT, Player
 from typing import List, Tuple
+from turtle import Turtle
+# car width and height same for every car (rendered within car_manager)
+CAR_WIDTH: int = 40
+CAR_HEIGHT: int = 20
+OVERLAP_MARGIN: int = 3
+
 
 
 def random_color() -> Tuple[int, int, int]:
@@ -48,3 +55,35 @@ def create_car_batch(
     # using the y-coordinates create the tuples with constant x-genesis-coordinate
     car_batch: List[Tuple[int, int]] = [(x_genesis, y_cor)for y_cor in car_batch_y_coordinates]
     return car_batch
+
+
+def check_collision(player: Player, car_container: List[Turtle]) -> bool:
+    """
+    - bounding box collision detection to check if any of the cars collides with the player
+    - overlapping margin added to ensure the rectangles are close to each other visibly at collisions
+    args:
+    - player object
+    - car container with list of turtle objects
+    returns:
+    - true for collision with any car
+    - otherwise false
+    """
+    player_right: float = player.xcor() + (PLAYER_WIDTH / 2) - OVERLAP_MARGIN
+    player_left: float = player.xcor() - (PLAYER_WIDTH / 2) + OVERLAP_MARGIN
+    player_top: float = player.ycor() + (PLAYER_HEIGHT / 2) - OVERLAP_MARGIN
+    player_bottom: float = player.ycor() - (PLAYER_HEIGHT / 2) + OVERLAP_MARGIN
+
+    for car in car_container:
+        car_right: float = car.xcor() + (CAR_WIDTH / 2)
+        car_left: float = car.xcor() - (CAR_WIDTH / 2)
+        car_top: float = car.ycor() + (CAR_HEIGHT / 2)
+        car_bottom: float = car.ycor() - (CAR_HEIGHT / 2)
+
+        if (
+            player_right > car_left and
+            player_left < car_right and
+            player_top > car_bottom and
+            player_bottom < car_top
+        ):
+            return True
+    return False

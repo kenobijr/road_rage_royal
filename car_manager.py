@@ -8,6 +8,7 @@ from typing import List, Tuple
 turtle.colormode(255)
 
 
+
 class CarManager:
     """
     - core game logic creating cars, steering and removing them
