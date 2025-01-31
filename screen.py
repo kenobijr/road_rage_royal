@@ -29,8 +29,9 @@ def init_screen() -> Screen:
     screen.title("ROAD RAGE ROYAL")
     # disables automatic screen updates
     screen.tracer(0)
-    # register the player car gif as shape to the screen
+    # register the player car and explosion gifs as shapes to the screen
     screen.register_shape("car.gif")
+    screen.register_shape("explosion.gif")
     # create turtle object to draw instructions / descriptions
     helper = Turtle()
     # draw start line at bottom boundary
@@ -50,3 +51,12 @@ def init_screen() -> Screen:
     # delete object reference to make garbage collector delete the turtle object
     del helper
     return screen
+
+
+def attach_event_listeners(screen, player) -> None:
+    """adds and activates event listeners for player movement"""
+    screen.listen()
+    screen.onkey(player.move_up, "Up")
+    screen.onkey(player.move_down, "Down")
+    screen.onkey(player.move_right, "Right")
+    screen.onkey(player.move_left, "Left")

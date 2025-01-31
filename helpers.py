@@ -1,13 +1,13 @@
 from random import randint
-from screen import TOP_BOUNDARY, BOTTOM_BOUNDARY
-from player import PLAYER_WIDTH, PLAYER_HEIGHT, Player
+from screen import Screen, TOP_BOUNDARY, BOTTOM_BOUNDARY
+from player import Player, PLAYER_WIDTH, PLAYER_HEIGHT
 from typing import List, Tuple
 from turtle import Turtle
+import time
 # car width and height same for every car (rendered within car_manager)
 CAR_WIDTH: int = 40
 CAR_HEIGHT: int = 20
-OVERLAP_MARGIN: int = 3
-
+OVERLAP_MARGIN: int = 2
 
 
 def random_color() -> Tuple[int, int, int]:
@@ -20,6 +20,7 @@ def random_color() -> Tuple[int, int, int]:
     g: int = randint(0, 255)
     b: int = randint(0, 255)
     return r, g, b
+
 
 def create_car_batch(
         car_batch_min: int,
@@ -87,3 +88,10 @@ def check_collision(player: Player, car_container: List[Turtle]) -> bool:
         ):
             return True
     return False
+
+
+def collision_animation(player: Player, screen: Screen) -> None:
+    """replaces player with an explosion effect for 0.5s"""
+    player.shape("explosion.gif")
+    screen.update()
+    time.sleep(1)

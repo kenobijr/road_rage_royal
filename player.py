@@ -67,3 +67,7 @@ class Player(Turtle):
         teleports the player to start position again when leveling up
         """
         self.teleport(PLAYER_START_X, PLAYER_START_Y)
+
+    def reset(self) -> None:
+        self.beam()
+        self.shape("car.gif")
