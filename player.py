@@ -1,5 +1,5 @@
 from turtle import Turtle
-from screen import BOTTOM_BOUNDARY
+from screen import BOTTOM_BOUNDARY, LEFT_BOUNDARY, RIGHT_BOUNDARY
 # button up moves player 20px forward
 MOVE_DISTANCE: int = 10
 # width and height of player gif in px
@@ -39,8 +39,28 @@ class Player(Turtle):
         """
         new_y: int = int(self.ycor()) - MOVE_DISTANCE
         # target ycor is measured from the center of player gif; subtract half player height from it
-        if new_y >= (BOTTOM_BOUNDARY + (PLAYER_HEIGHT / 2)):
+        if new_y >= BOTTOM_BOUNDARY + (PLAYER_HEIGHT / 2):
             self.goto(int(self.xcor()), new_y)
+
+    def move_right(self) -> None:
+        """
+        - moves the player right for the defined distance on clicking right key arrow
+        - moving beyond the right screen boundary not allowed
+        """
+        new_x: int = int(self.xcor()) + MOVE_DISTANCE
+        # target ycor is measured from the center of player gif; subtract half player height from it
+        if new_x <= RIGHT_BOUNDARY - (PLAYER_WIDTH / 2):
+            self.goto(int(new_x), self.ycor())
+
+    def move_left(self) -> None:
+        """
+        - moves the player left for the defined distance on clicking left key arrow
+        - moving beyond the left screen boundary not allowed
+        """
+        new_x: int = int(self.xcor()) - MOVE_DISTANCE
+        # target ycor is measured from the center of player gif; subtract half player height from it
+        if new_x >= LEFT_BOUNDARY + (PLAYER_WIDTH / 2):
+            self.goto(int(new_x), self.ycor())
 
     def beam(self) -> None:
         """

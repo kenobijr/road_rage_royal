@@ -56,6 +56,9 @@ class Game:
         self.screen.listen()
         self.screen.onkey(self.player.move_up, "Up")
         self.screen.onkey(self.player.move_down, "Down")
+        self.screen.onkey(self.player.move_right, "Right")
+        self.screen.onkey(self.player.move_left, "Left")
+
 
     def play(self):
         """starts the game and handles the restart logic"""
