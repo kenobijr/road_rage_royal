@@ -7,15 +7,38 @@ from turtle import Screen, Turtle
 from helpers import check_collision, collision_animation
 
 
+class GameFactory:
+    """Factory to create game objects"""
+    @staticmethod
+    def create_screen() -> Screen:
+        screen = init_screen()
+        return screen
+
+    @staticmethod
+    def create_player() -> Player:
+        return Player()
+
+    @staticmethod
+    def create_car_manager() -> CarManager:
+        return CarManager()
+
+    @staticmethod
+    def create_scoreboard() -> Scoreboard:
+        return Scoreboard(-70, 257)
+
+    @staticmethod
+    def create_highscore() -> Highscore:
+        return Highscore(-287, 260)
+
+
 class Game:
     """manages the entire game lifecycle, including initialization, running the game loop, and restarting the game"""
     def __init__(self) -> None:
-        self.screen: Screen = init_screen()
-        self.player: Player = Player()
-        self.cars: CarManager = CarManager()
-        # shows current level, init with x & y coordinates for position
-        self.scoreboard: Scoreboard = Scoreboard(-70, 257)
-        self.highscore: Highscore = Highscore(-287, 260)
+        self.screen = GameFactory.create_screen()
+        self.player = GameFactory.create_player()
+        self.cars = GameFactory.create_car_manager()
+        self.scoreboard = GameFactory.create_scoreboard()
+        self.highscore = GameFactory.create_highscore()
         # add event listeners for keys
         attach_event_listeners(self.screen, self.player)
         # update screen initially
@@ -29,30 +52,26 @@ class Game:
         - check for end state "player <> car collisions"
         - check if player levels up by reaching top boundary
         """
-        game_is_running: bool = True
-        while game_is_running:
+        while True:
             # get value from cars class dictating game speed
             time.sleep(self.cars.speed)
             self.screen.update()
             # move the cars forward; add new cars; remove cars leaving the screen
-            self.cars.move_cars()
-            self.cars.add_cars()
-            self.cars.wreck_cars()
+            self.cars.update_cars()
             # check for game end state: if player collides with car, end run loop
             if check_collision(self.player, self.cars.car_container):
                 # execute animation and time delay
                 collision_animation(self.player, self.screen)
-                game_is_running: bool = False
+                break
             # check if turtle crossed upper boundary to teleport (top boundary + 10 for half turtle size -2 for 2 lines)
             if self.player.ycor() > TOP_BOUNDARY + 10:
                 self.scoreboard.increase_level()
-                # teleport player back to start point
+                # update highscore if necessary for new reached level
                 self.highscore.update_highscore(self.scoreboard.level)
+                # teleport player back to start point
                 self.player.beam()
                 # increase difficulty
-                self.cars.car_batch_max += 1
-                self.cars.car_batch_min += 1
-                self.cars.speed *= 0.9
+                self.cars.increase_difficulty(self.scoreboard.level)
 
     def reset(self) -> None:
         """resets the game state for a new game session"""

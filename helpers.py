@@ -25,7 +25,7 @@ def random_color() -> Tuple[int, int, int]:
 def create_car_batch(
         car_batch_min: int,
         car_batch_max: int,
-        car_batch_y_gap: int,
+        car_batch_y_gap: float,
         x_genesis: int
 ) -> List[Tuple[int, int]]:
     """

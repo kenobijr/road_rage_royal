@@ -8,7 +8,6 @@ from typing import List, Tuple
 turtle.colormode(255)
 
 
-
 class CarManager:
     """
     - core game logic creating cars, steering and removing them
@@ -31,9 +30,9 @@ class CarManager:
         # value for bottom boundary of new generated car batch; increases with game difficulty
         self.car_batch_min: int = 0
         # gap in px along x-axis between car batches
-        self.car_batch_x_gap: int = 80
+        self.car_batch_x_gap: float = 80
         # gap in px along y-axis between single cars within a batch
-        self.car_batch_y_gap: int = 25
+        self.car_batch_y_gap: float = 25
         # genesis x cor for new car batches; beyond the screen on the right side
         self.x_genesis_cor: int = int((SCREEN_WIDTH / 2) + 20)
         # cars going beyond this x cor (out of screen) are wrecked
@@ -118,3 +117,20 @@ class CarManager:
         self.car_batch_max = 3
         self.car_batch_min = 0
         self.speed = 0.2
+
+    def increase_difficulty(self, level) -> None:
+        """ increase game difficulty when player levels up for delivered level"""
+        self.speed *= 0.95
+        if level >= 3:
+            self.car_batch_max += 1
+        if level >= 5:
+            self.car_batch_x_gap *= 0.95
+            self.car_batch_y_gap *= 0.95
+        if level >= 7:
+            self.car_batch_min += 1
+
+    def update_cars(self) -> None:
+        """ wrapper for move, add and wreck cars"""
+        self.move_cars()
+        self.add_cars()
+        self.wreck_cars()
