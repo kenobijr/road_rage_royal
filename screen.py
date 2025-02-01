@@ -46,8 +46,8 @@ def init_screen() -> Screen:
     helper.penup()
     helper.write("SAFE ZONE", align=TEXT_ALIGNMENT, font=(FONT_TYPE, 25, FONT_STYLE))
     # teleport and write text "cross line to teleport" within the finish area
-    helper.teleport(50, 265)
-    helper.write("Cross line to teleport", align=TEXT_ALIGNMENT, font=(FONT_TYPE, 18, FONT_STYLE))
+    helper.teleport(120, 260)
+    helper.write("TARGET AREA", align=TEXT_ALIGNMENT, font=(FONT_TYPE, 25, FONT_STYLE))
     # delete object reference to make garbage collector delete the turtle object
     del helper
     return screen

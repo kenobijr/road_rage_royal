@@ -1,25 +1,24 @@
 from turtle import Turtle
+from highscore_db import read_highscore, init_db, update_highscore
 
 TEXT_ALIGNMENT: str = "left"
 FONT_TYPE: str = "Courier"
-FONT_STYLE: str = "bold"
-FONT_SIZE: int = 30
 
 
 class Scoreboard(Turtle):
     """manage the scoreboard logic and game over message"""
-    def __init__(self) -> None:
+    def __init__(self, start_x: int, start_y: int) -> None:
         super().__init__()
         self.level: int = 1
         self.penup()
         self.hideturtle()
-        self.goto(-287, 257)
+        self.goto(start_x, start_y)
         self.render_level()
 
     def render_level(self) -> None:
         """render the current level to the UI"""
-        level: str = f"Level: {self.level}"
-        self.write(level, align=TEXT_ALIGNMENT, font=(FONT_TYPE, FONT_SIZE, FONT_STYLE))
+        level: str = f"Level {self.level}"
+        self.write(level, align=TEXT_ALIGNMENT, font=(FONT_TYPE, 30, "bold"))
 
     def increase_level(self) -> None:
         """update level counter, clear UI and trigger render_level"""
@@ -33,7 +32,29 @@ class Scoreboard(Turtle):
         self.clear()
         self.render_level()
 
-    def game_over(self) -> None:
-        """show big game over message in center of UI"""
-        self.goto(0, 0)
-        self.write("GAME OVER", align="center", font=(FONT_TYPE, 50, FONT_STYLE))
+
+class Highscore(Turtle):
+    def __init__(self, start_x: int, start_y: int) -> None:
+        super().__init__()
+        # set up DB initially with default value 1
+        init_db()
+        # reads highscore from DB
+        self.highscore = read_highscore()
+        self.penup()
+        self.hideturtle()
+        self.goto(start_x, start_y)
+        self.render_highscore()
+
+    def update_highscore(self, level):
+        """read highscore from DB; if necessary update it in DB and UI"""
+        self.highscore = read_highscore()
+        if level > self.highscore:
+            update_highscore(level)
+            self.highscore = level
+            self.clear()
+            self.render_highscore()
+
+    def render_highscore(self) -> None:
+        """render the current level to the UI"""
+        highscore: str = f"Highscore {self.highscore}"
+        self.write(highscore, align=TEXT_ALIGNMENT, font=(FONT_TYPE, 25, "normal"))

@@ -1,6 +1,6 @@
 from player import Player
 from car_manager import CarManager
-from scoreboard import Scoreboard
+from scoreboard import Scoreboard, Highscore
 import time
 from screen import init_screen, attach_event_listeners, TOP_BOUNDARY
 from turtle import Screen, Turtle
@@ -13,7 +13,9 @@ class Game:
         self.screen: Screen = init_screen()
         self.player: Player = Player()
         self.cars: CarManager = CarManager()
-        self.scoreboard: Scoreboard = Scoreboard()
+        # shows current level, init with x & y coordinates for position
+        self.scoreboard: Scoreboard = Scoreboard(-70, 257)
+        self.highscore: Highscore = Highscore(-287, 260)
         # add event listeners for keys
         attach_event_listeners(self.screen, self.player)
         # update screen initially
@@ -45,6 +47,7 @@ class Game:
             if self.player.ycor() > TOP_BOUNDARY + 10:
                 self.scoreboard.increase_level()
                 # teleport player back to start point
+                self.highscore.update_highscore(self.scoreboard.level)
                 self.player.beam()
                 # increase difficulty
                 self.cars.car_batch_max += 1
@@ -57,7 +60,6 @@ class Game:
         self.player.reset()
         self.scoreboard.reset_level()
         attach_event_listeners(self.screen, self.player)
-
 
     def play(self):
         """starts the game and handles the restart logic"""
