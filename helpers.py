@@ -16,10 +16,7 @@ def random_color() -> Tuple[int, int, int]:
     - returns:
         Tuple[int, int, int]: a tuple of three integers representing RGB valuess
     """
-    r: int = randint(0, 255)
-    g: int = randint(0, 255)
-    b: int = randint(0, 255)
-    return r, g, b
+    return randint(0, 255), randint(0, 255), randint(0, 255)
 
 
 def create_car_batch(
@@ -54,8 +51,7 @@ def create_car_batch(
             # only if not "touching" the min_space of any already added y-coordinate, add the new generated y-coordinate
             car_batch_y_coordinates.append(new_y)
     # using the y-coordinates create the tuples with constant x-genesis-coordinate
-    car_batch: List[Tuple[int, int]] = [(x_genesis, y_cor)for y_cor in car_batch_y_coordinates]
-    return car_batch
+    return [(x_genesis, y_cor) for y_cor in car_batch_y_coordinates]
 
 
 def check_collision(player: Player, car_container: List[Turtle]) -> bool:
@@ -73,13 +69,11 @@ def check_collision(player: Player, car_container: List[Turtle]) -> bool:
     player_left: float = player.xcor() - (PLAYER_WIDTH / 2) + OVERLAP_MARGIN
     player_top: float = player.ycor() + (PLAYER_HEIGHT / 2) - OVERLAP_MARGIN
     player_bottom: float = player.ycor() - (PLAYER_HEIGHT / 2) + OVERLAP_MARGIN
-
     for car in car_container:
         car_right: float = car.xcor() + (CAR_WIDTH / 2)
         car_left: float = car.xcor() - (CAR_WIDTH / 2)
         car_top: float = car.ycor() + (CAR_HEIGHT / 2)
         car_bottom: float = car.ycor() - (CAR_HEIGHT / 2)
-
         if (
             player_right > car_left and
             player_left < car_right and

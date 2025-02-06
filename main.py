@@ -8,7 +8,7 @@ from helpers import check_collision, collision_animation
 
 
 class GameFactory:
-    """Factory to create game objects"""
+    """factory to create game objects"""
     @staticmethod
     def create_screen() -> Screen:
         screen = init_screen()

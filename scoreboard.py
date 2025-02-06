@@ -1,12 +1,12 @@
 from turtle import Turtle
-from highscore_db import read_highscore, init_db, update_highscore
+from highscore_db import HighscoreDB
 
 TEXT_ALIGNMENT: str = "left"
 FONT_TYPE: str = "Courier"
 
 
 class Scoreboard(Turtle):
-    """manage the scoreboard logic and game over message"""
+    """manage the scoreboard logic showing the level of the current game"""
     def __init__(self, start_x: int, start_y: int) -> None:
         super().__init__()
         self.level: int = 1
@@ -34,12 +34,13 @@ class Scoreboard(Turtle):
 
 
 class Highscore(Turtle):
+    """manages the highscore logic showing and updating the highscore over all games played using sqlite3 DB"""
     def __init__(self, start_x: int, start_y: int) -> None:
         super().__init__()
-        # set up DB initially with default value 1
-        init_db()
+        # initiate & set up sqlite3 DB initially with default value 1 if not already existing
+        self.highscore_db = HighscoreDB()
         # reads highscore from DB
-        self.highscore = read_highscore()
+        self.highscore = self.highscore_db.read_db()
         self.penup()
         self.hideturtle()
         self.goto(start_x, start_y)
@@ -47,9 +48,9 @@ class Highscore(Turtle):
 
     def update_highscore(self, level):
         """read highscore from DB; if necessary update it in DB and UI"""
-        self.highscore = read_highscore()
+        self.highscore = self.highscore_db.read_db()
         if level > self.highscore:
-            update_highscore(level)
+            self.highscore_db.update_highscore(level)
             self.highscore = level
             self.clear()
             self.render_highscore()

@@ -4,60 +4,47 @@ import os
 DB_FILE: str = "highscore.db"
 
 
-def init_db() -> None:
-    """
-    - on first running the game create and init a sqlite3 db to save the highscore
-    - creates db and highscore table if not existing
-    - highscore is global for all users on the instance
-    - inserts default value for highscore
-    """
-    con = sqlite3.connect(DB_FILE)
-    cursor = con.cursor()
-    # Create table with a constraint to enforce only one row
-    cursor.execute("""
-        CREATE TABLE IF NOT EXISTS global_highscore (
-        id INTEGER CHECK (id = 1),
-        score INTEGER NOT NULL,
-        PRIMARY KEY (id)
-        )
-    """)
-    # check if row and therefore value exists already in the DB
-    cursor.execute("""
-        SELECT COUNT(*) FROM global_highscore
-    """)
-    if cursor.fetchone()[0] == 0:
-        # insert initial value for highscore into DB only if empty yet
-        cursor.execute("""
-            INSERT INTO global_highscore (id, score)
-            VALUES (?, ?)
-        """, (1, 1))
-        # commit it
-        con.commit()
-    # close db connection
-    con.close()
+class HighscoreDB:
+    """singleton database class for managing the highscore with sqlite3 on one instance"""
+    # class variable to store the single instance across all instances
+    _instance = None
 
+    def __new__(cls):
+        """calling __new__ special method (overriding __init__) to ensure only one instance is created"""
+        # create instance only if no one exists yet
+        if cls._instance is None:
+            # call parent class constructor with super() and default object creation method with __new__(cls)
+            cls._instance = super().__new__(cls)
+            # init the db on the object
+            cls._instance._init_db()
+        return cls._instance
 
-def read_highscore() -> int:
-    """reads the current highscore from DB and returns it as int"""
-    con = sqlite3.connect(DB_FILE)
-    cursor = con.cursor()
-    cursor.execute("""
-        SELECT score FROM global_highscore
-        WHERE id = 1
-    """)
-    highscore = cursor.fetchone()[0]
-    con.close()
-    return highscore
+    def _init_db(self) -> None:
+        """initializes the database and ensures the highscore table exists"""
+        with sqlite3.connect(DB_FILE) as con:
+            con.execute("""
+                CREATE TABLE IF NOT EXISTS global_highscore (
+                id INTEGER CHECK (id = 1),
+                score INTEGER NOT NULL,
+                PRIMARY KEY (id)
+                )
+            """)
+            # only inserts the default value 1 if the row doesn't exist yet
+            con.execute("""
+                INSERT OR IGNORE INTO global_highscore (id, score) VALUES (1, 1)
+            """)
 
+    def read_db(self) -> int:
+        """reads the highscore from DB and returns it as int"""
+        with sqlite3.connect(DB_FILE) as con:
+            return con.execute("""
+                SELECT score FROM global_highscore
+                WHERE id = 1
+            """).fetchone()[0]
 
-def update_highscore(new_highscore: int) -> None:
-    """update the highscore in the DB"""
-    con = sqlite3.connect(DB_FILE)
-    cursor = con.cursor()
-    cursor.execute("""
-        UPDATE global_highscore
-        SET score = ?
-        WHERE id = 1
-    """, (new_highscore, ))
-    con.commit()
-    con.close()
+    def update_highscore(self, new_highscore: int) -> None:
+        """updates the highscore value in the db with a new int argument"""
+        with sqlite3.connect(DB_FILE) as con:
+            con.execute("""
+            UPDATE global_highscore SET score = ? WHERE id = 1
+            """, (new_highscore,))
