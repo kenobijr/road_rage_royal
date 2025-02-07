@@ -19,7 +19,7 @@ def random_color() -> Tuple[int, int, int]:
     return randint(0, 255), randint(0, 255), randint(0, 255)
 
 
-def create_car_batch(
+def create_block_batch(
         car_batch_min: int,
         car_batch_max: int,
         car_batch_y_gap: float,

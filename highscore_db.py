@@ -1,5 +1,5 @@
 import sqlite3
-import os
+
 # name / path of highscore DB
 DB_FILE: str = "highscore.db"
 
