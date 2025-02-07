@@ -1,6 +1,6 @@
 from random import randint
 from screen import Screen, TOP_BOUNDARY, BOTTOM_BOUNDARY
-from player import Player, PLAYER_WIDTH, PLAYER_HEIGHT
+from player import Player
 from typing import List, Tuple
 from turtle import Turtle
 import time
@@ -65,10 +65,10 @@ def check_collision(player: Player, car_container: List[Turtle]) -> bool:
     - true for collision with any car
     - otherwise false
     """
-    player_right: float = player.xcor() + (PLAYER_WIDTH / 2) - OVERLAP_MARGIN
-    player_left: float = player.xcor() - (PLAYER_WIDTH / 2) + OVERLAP_MARGIN
-    player_top: float = player.ycor() + (PLAYER_HEIGHT / 2) - OVERLAP_MARGIN
-    player_bottom: float = player.ycor() - (PLAYER_HEIGHT / 2) + OVERLAP_MARGIN
+    player_right: float = player.get_xcor() + (player.get_width() / 2) - OVERLAP_MARGIN
+    player_left: float = player.get_xcor() - (player.get_width() / 2) + OVERLAP_MARGIN
+    player_top: float = player.get_ycor() + (player.get_height() / 2) - OVERLAP_MARGIN
+    player_bottom: float = player.get_ycor() - (player.get_height() / 2) + OVERLAP_MARGIN
     for car in car_container:
         car_right: float = car.xcor() + (CAR_WIDTH / 2)
         car_left: float = car.xcor() - (CAR_WIDTH / 2)
@@ -86,6 +86,6 @@ def check_collision(player: Player, car_container: List[Turtle]) -> bool:
 
 def collision_animation(player: Player, screen: Screen) -> None:
     """replaces player with an explosion effect for 0.5s"""
-    player.shape("explosion.gif")
+    player.update_shape("explosion.gif")
     screen.update()
     time.sleep(1)

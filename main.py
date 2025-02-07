@@ -53,7 +53,7 @@ class Game:
 
     def _player_reached_goal(self):
         """checks if the player has reached the top boundary"""
-        return self.player.ycor() > TOP_BOUNDARY + 10
+        return self.player.get_ycor() > TOP_BOUNDARY + 10
 
     def _level_up(self):
         """handles leveling up logic, updating scores, and increasing difficulty"""
