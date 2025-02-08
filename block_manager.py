@@ -1,11 +1,51 @@
-# importing the module single to be able to change color mode on module level to rgb
-import turtle
 from turtle import Turtle
 from helpers import random_color, create_block_batch
 from screen import SCREEN_WIDTH
 from typing import List, Tuple
-# change color mode on module level
+# importing the module single to be able to change color mode on module level to rgb
+import turtle
 turtle.colormode(255)
+
+
+class Block:
+    """represents a single block moving over the screen"""
+    def __init__(self, x: int, y: int, shape: str = "square"):
+        self._turtle = Turtle(shape)
+        self._turtle.penup()
+        # stretch it to size 40x20 px as rectangle
+        self._turtle.shapesize(stretch_wid=1, stretch_len=2)
+        # retrieving random rgb colors from helpers.py
+        self._turtle.color(random_color())
+        self._turtle.goto(x, y)
+
+    def move(self, distance: int) -> None:
+        new_x: float = self._turtle.xcor() - distance
+        self._turtle.goto(new_x, self._turtle.ycor())
+
+    def is_off_screen(self, x_wrecking_cor: int) -> bool:
+        return self._turtle.xcor() < x_wrecking_cor
+
+    def remove(self) -> None:
+        self._turtle.hideturtle()
+        self._turtle.clear()
+
+    def get_xcor(self) -> float:
+        """deliver the x-coordinate to outside class callees, since _turtle is private"""
+        return self._turtle.xcor()
+
+    def get_ycor(self) -> float:
+        """deliver the y-coordinate to outside class callees, since _turtle is private"""
+        return self._turtle.ycor()
+
+    @property
+    def get_width(self) -> float:
+        """returns the block's width based on its shapesize; stretch_len * 20px"""
+        return self._turtle.shapesize()[1] * 20
+
+    @property
+    def get_height(self) -> float:
+        """returns the block's height based on its shapesize; stretch_wid * 20px"""
+        return self._turtle.shapesize()[0] * 20
 
 
 class BlockManager:
@@ -19,20 +59,28 @@ class BlockManager:
     - block batches going over the screen on the left side are wrecked
     - on level up difficulty increased by changing self.speed and self.block_batch_max
     """
-    def __init__(self) -> None:
-        self.block_container: List[Turtle] = []
+    def __init__(
+        self,
+        speed: float = 0.2,
+        distance: int = 5,
+        block_batch_max: int = 3,
+        block_batch_min: int = 0,
+        block_batch_x_gap: float = 80,
+        block_batch_y_gap: float = 25,
+    ) -> None:
+        self.block_container: List[Block] = []
         # value for time.sleep in main game loop dictating game speed
-        self.speed: float = 0.2
+        self.speed: float = speed
         # distance in px of every block moving forward one time
-        self.move_distance: int = 5
+        self.distance: int = distance
         # value for upper boundary of new generated block batch; increases with game difficulty
-        self.block_batch_max: int = 3
+        self.block_batch_max: int = block_batch_max
         # value for bottom boundary of new generated block batch; increases with game difficulty
-        self.block_batch_min: int = 0
+        self.block_batch_min: int = block_batch_min
         # gap in px along x-axis between block batches
-        self.block_batch_x_gap: float = 80
+        self.block_batch_x_gap: float = block_batch_x_gap
         # gap in px along y-axis between single block within a batch
-        self.block_batch_y_gap: float = 25
+        self.block_batch_y_gap: float = block_batch_y_gap
         # genesis x cor for new block batches; beyond the screen on the right side
         self.x_genesis_cor: int = int((SCREEN_WIDTH / 2) + 20)
         # block going beyond this x cor (out of screen) are wrecked
@@ -48,8 +96,10 @@ class BlockManager:
         - if this distance / gap is big enough, the creation of a further block batch is triggered
         - this way the overlapping of blocks along the x-axis is prevented
         """
-        # for empty block_container create new batch always
-        if not self.block_container:
+        if (
+                not self.block_container
+                or max(block.get_xcor() for block in self.block_container) < self.x_genesis_cor - self.block_batch_x_gap
+        ):
             block_batch: List[Tuple[int, int]] = create_block_batch(
                 self.block_batch_min,
                 self.block_batch_max,
@@ -57,62 +107,31 @@ class BlockManager:
                 self.x_genesis_cor
             )
             self.render_blocks(block_batch)
-        else:
-            # determine x-coordinate of rightmost block
-            rightmost_x: float = max(car.xcor() for car in self.block_container)
-            # only add blocks after min gap on x-axis
-            if rightmost_x < self.x_genesis_cor - self.block_batch_x_gap:
-                block_batch: List[Tuple[int, int]] = create_block_batch(
-                    self.block_batch_min,
-                    self.block_batch_max,
-                    self.block_batch_y_gap,
-                    self.x_genesis_cor)
-                self.render_blocks(block_batch)
 
     def render_blocks(self, block_coordinates: List[Tuple[int, int]]) -> None:
-        """
-        - takes list of tuple block-coordinates as input
-        - creates blocks as turtle objects for each tuple
-        - appends each block to self.block_container
-        """
-        for block in block_coordinates:
-            new_block: Turtle = Turtle("square")
-            new_block.penup()
-            # stretch it to size 40x20 px as rectangle
-            new_block.shapesize(stretch_wid=1, stretch_len=2)
-            # retrieving random rgb colors from helpers.py
-            new_block.color(random_color())
-            new_block.goto(block[0], block[1])
+        """takes list of tuple block-coordinates as input; creates blocks as turtle objects for each tuple"""
+        for x, y in block_coordinates:
+            new_block: Block = Block(x, y)
             self.block_container.append(new_block)
 
     def move_blocks(self) -> None:
-        """
-        - move all blocks in the car_container forward by reducing the x-coordinate
-        - determined by move_distance and self.speed
-        """
+        """move all blocks in the car_container forward by reducing the x-coordinate"""
         for block in self.block_container:
-            new_x: float = block.xcor() - self.move_distance
-            block.goto(new_x, block.ycor())
+            block.move(self.distance)
 
     def wreck_blocks(self) -> None:
-        """
-        - delete all blocks crossing the left screen border
-        - determined by the x-wrecking-coordinate as boundary
-        """
-        # Iterate through blocks and clean up those that need to be wrecked
+        """delete all blocks crossing the left screen border; determined by the x-wrecking-coordinate as boundary"""
         for block in self.block_container:
             # check if blocks need to be wrecked due to crossing the left screen border
-            if block.xcor() < self.x_wrecking_cor:
-                block.hideturtle()
-                block.clear()
+            if block.is_off_screen(self.x_wrecking_cor):
+                block.remove()
         # filter out blocks that are wrecked and rebuild the container
-        self.block_container = [block for block in self.block_container if block.xcor() >= self.x_wrecking_cor]
+        self.block_container = [block for block in self.block_container if not block.is_off_screen(self.x_wrecking_cor)]
 
     def reset(self) -> None:
         """ delete all blocks and reset difficulty for game restart"""
         for block in self.block_container:
-            block.hideturtle()
-            block.clear()
+            block.remove()
         self.block_container.clear()
         self.block_batch_max = 3
         self.block_batch_min = 0
@@ -134,3 +153,4 @@ class BlockManager:
         self.move_blocks()
         self.add_blocks()
         self.wreck_blocks()
+

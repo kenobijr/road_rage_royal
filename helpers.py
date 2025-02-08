@@ -3,6 +3,7 @@ from screen import Screen, TOP_BOUNDARY, BOTTOM_BOUNDARY
 from player import Player
 from typing import List, Tuple
 from turtle import Turtle
+#from block_manager import Block, BlockManager
 import time
 # car width and height same for every car (rendered within car_manager)
 CAR_WIDTH: int = 40
@@ -54,31 +55,31 @@ def create_block_batch(
     return [(x_genesis, y_cor) for y_cor in car_batch_y_coordinates]
 
 
-def check_collision(player: Player, car_container: List[Turtle]) -> bool:
+def check_collision(player: Player, block_container) -> bool:
     """
-    - bounding box collision detection to check if any of the cars collides with the player
+    - bounding box collision detection to check if any of the blocks collides with the player
     - overlapping margin added to ensure the rectangles are close to each other visibly at collisions
     args:
     - player object
-    - car container with list of turtle objects
+    - block container with list of block objects
     returns:
-    - true for collision with any car
+    - true for collision with any block
     - otherwise false
     """
     player_right: float = player.get_xcor() + (player.get_width() / 2) - OVERLAP_MARGIN
     player_left: float = player.get_xcor() - (player.get_width() / 2) + OVERLAP_MARGIN
     player_top: float = player.get_ycor() + (player.get_height() / 2) - OVERLAP_MARGIN
     player_bottom: float = player.get_ycor() - (player.get_height() / 2) + OVERLAP_MARGIN
-    for car in car_container:
-        car_right: float = car.xcor() + (CAR_WIDTH / 2)
-        car_left: float = car.xcor() - (CAR_WIDTH / 2)
-        car_top: float = car.ycor() + (CAR_HEIGHT / 2)
-        car_bottom: float = car.ycor() - (CAR_HEIGHT / 2)
+    for block in block_container:
+        block_right: float = block.get_xcor() + (block.get_width / 2)
+        block_left: float = block.get_xcor() - (block.get_width / 2)
+        block_top: float = block.get_ycor() + (block.get_height / 2)
+        block_bottom: float = block.get_ycor() - (block.get_height / 2)
         if (
-            player_right > car_left and
-            player_left < car_right and
-            player_top > car_bottom and
-            player_bottom < car_top
+            player_right > block_left and
+            player_left < block_right and
+            player_top > block_bottom and
+            player_bottom < block_top
         ):
             return True
     return False
