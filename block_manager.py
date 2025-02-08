@@ -19,13 +19,16 @@ class Block:
         self._turtle.goto(x, y)
 
     def move(self, distance: int) -> None:
+        """move from left to right by reducing x-coordinate by distance per frame"""
         new_x: float = self._turtle.xcor() - distance
         self._turtle.goto(new_x, self._turtle.ycor())
 
     def is_off_screen(self, x_wrecking_cor: int) -> bool:
+        """returns true if x-coordinate is smaller than x_wrecking_coordinate"""
         return self._turtle.xcor() < x_wrecking_cor
 
     def remove(self) -> None:
+        """removes a block / turtle"""
         self._turtle.hideturtle()
         self._turtle.clear()
 
@@ -57,7 +60,7 @@ class BlockManager:
     - multiple batches have a min. distance non-overlapping between them along the x-axis
     - block batches are generated at a defined genesis point at right side out of screen running from right to left
     - block batches going over the screen on the left side are wrecked
-    - on level up difficulty increased by changing self.speed and self.block_batch_max
+    - when player levels up difficulty increases by changing some params
     """
     def __init__(
         self,

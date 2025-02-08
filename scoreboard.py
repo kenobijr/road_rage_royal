@@ -5,57 +5,56 @@ TEXT_ALIGNMENT: str = "left"
 FONT_TYPE: str = "Courier"
 
 
-class Scoreboard(Turtle):
+class Scoreboard:
     """manage the scoreboard logic showing the level of the current game"""
     def __init__(self, start_x: int, start_y: int) -> None:
-        super().__init__()
         self.level: int = 1
-        self.penup()
-        self.hideturtle()
-        self.goto(start_x, start_y)
+        self._turtle = Turtle()
+        self._turtle.penup()
+        self._turtle.hideturtle()
+        self._turtle.goto(start_x, start_y)
         self.render_level()
 
     def render_level(self) -> None:
         """render the current level to the UI"""
         level: str = f"Level {self.level}"
-        self.write(level, align=TEXT_ALIGNMENT, font=(FONT_TYPE, 30, "bold"))
+        self._turtle.write(level, align=TEXT_ALIGNMENT, font=(FONT_TYPE, 30, "bold"))
 
     def increase_level(self) -> None:
-        """update level counter, clear UI and trigger render_level"""
+        """update level counter and UI"""
         self.level += 1
-        self.clear()
+        self._turtle.clear()
         self.render_level()
 
     def reset_level(self) -> None:
         """reset level after game restart"""
         self.level: int = 1
-        self.clear()
+        self._turtle.clear()
         self.render_level()
 
 
-class Highscore(Turtle):
+class Highscore:
     """manages the highscore logic showing and updating the highscore over all games played using sqlite3 DB"""
     def __init__(self, start_x: int, start_y: int) -> None:
-        super().__init__()
         # initiate & set up sqlite3 DB initially with default value 1 if not already existing
         self.highscore_db = HighscoreDB()
         # reads highscore from DB
         self.highscore = self.highscore_db.read_db()
-        self.penup()
-        self.hideturtle()
-        self.goto(start_x, start_y)
+        self._turtle = Turtle()
+        self._turtle.penup()
+        self._turtle.hideturtle()
+        self._turtle.goto(start_x, start_y)
         self.render_highscore()
 
     def update_highscore(self, level):
-        """read highscore from DB; if necessary update it in DB and UI"""
-        self.highscore = self.highscore_db.read_db()
+        """on new highscores update DB and UI"""
         if level > self.highscore:
             self.highscore_db.update_highscore(level)
             self.highscore = level
-            self.clear()
+            self._turtle.clear()
             self.render_highscore()
 
     def render_highscore(self) -> None:
         """render the current level to the UI"""
         highscore: str = f"Highscore {self.highscore}"
-        self.write(highscore, align=TEXT_ALIGNMENT, font=(FONT_TYPE, 25, "normal"))
+        self._turtle.write(highscore, align=TEXT_ALIGNMENT, font=(FONT_TYPE, 25, "normal"))
