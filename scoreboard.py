@@ -39,7 +39,7 @@ class Highscore:
         # initiate & set up sqlite3 DB initially with default value 1 if not already existing
         self.highscore_db = HighscoreDB()
         # reads highscore from DB
-        self.highscore = self.highscore_db.read_db()
+        self.highscore = self.highscore_db.get_highscore()
         self._turtle = Turtle()
         self._turtle.penup()
         self._turtle.hideturtle()
