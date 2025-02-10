@@ -2,7 +2,7 @@ from player import Player
 from block_manager import BlockManager
 from scoreboard import Scoreboard, Highscore
 import time
-from screen import init_screen, attach_event_listeners, TOP_BOUNDARY
+from screen import GameScreen
 from turtle import Screen
 from helpers import check_collision, collision_animation
 
@@ -10,15 +10,15 @@ from helpers import check_collision, collision_animation
 class Game:
     """manages the entire game lifecycle, including initialization, running the game loop, and restarting the game"""
     def __init__(self) -> None:
-        self.screen: Screen = init_screen()
-        self.player: Player = Player()
-        self.blocks: BlockManager = BlockManager()
+        self.screen: Screen = GameScreen()
+        self.player: Player = Player(self.screen)
+        self.blocks: BlockManager = BlockManager(self.screen)
         self.scoreboard: Scoreboard = Scoreboard(-70, 257)
         self.highscore: Highscore = Highscore(-287, 260)
-        # add event listeners for keys
-        attach_event_listeners(self.screen, self.player)
+        # add event listeners for keys as dict with bound methods to player object
+        self._attach_controls()
         # update screen initially
-        self.screen.update()
+        self.screen.update_screen()
         self.running = True
 
     def run(self) -> None:
@@ -32,7 +32,7 @@ class Game:
         while self.running:
             # get value from block class dictating game speed
             time.sleep(self.blocks.speed)
-            self.screen.update()
+            self.screen.update_screen()
             self._update_game_state()
             # check for game end state: if player collides with block, end run loop
             if check_collision(self.player, self.blocks.block_container):
@@ -42,20 +42,50 @@ class Game:
             if self._player_reached_goal():
                 self._level_up()
 
-    def _update_game_state(self):
+    def play(self) -> None:
+        """starts the game and handles the restart logic"""
+        while True:
+            # run the main game loop
+            self.run()
+            if not self._ask_restart():
+                break
+            # reset the game objects for further round
+            self.reset()
+
+    def reset(self) -> None:
+        """resets the game state for a new game session"""
+        self.blocks.reset()
+        self.player.reset()
+        self.scoreboard.reset_level()
+        self._attach_controls()
+        # restart game loop
+        self.running = True
+
+    def _attach_controls(self) -> None:
+        """attach event handlers to player on init game and restart game"""
+        self.screen.attach_event_listeners(
+            {
+                "Up": self.player.move_up,
+                "Down": self.player.move_down,
+                "Right": self.player.move_right,
+                "Left": self.player.move_left
+            }
+        )
+
+    def _update_game_state(self) -> None:
         """handles game state updates per frame (block movement, adding/removing blocks)"""
         self.blocks.update_blocks()
 
-    def _handle_collisions(self):
+    def _handle_collisions(self) -> None:
         """handles logic when the player collides with a block; sets running flag to false"""
         collision_animation(self.player, self.screen)
         self.running = False
 
-    def _player_reached_goal(self):
+    def _player_reached_goal(self) -> bool:
         """checks if the player has reached the top boundary"""
-        return self.player.get_ycor() > TOP_BOUNDARY + 10
+        return self.player.get_ycor() > self.screen.top_boundary + 10
 
-    def _level_up(self):
+    def _level_up(self) -> None:
         """handles leveling up logic, updating scores, and increasing difficulty"""
         self.scoreboard.increase_level()
         # update highscore if necessary for new reached level
@@ -63,29 +93,9 @@ class Game:
         self.player.reset_position()
         self.blocks.increase_difficulty(self.scoreboard.level)
 
-    def reset(self) -> None:
-        """resets the game state for a new game session"""
-        self.blocks.reset()
-        self.player.reset()
-        self.scoreboard.reset_level()
-        attach_event_listeners(self.screen, self.player)
-        # restart game loop
-        self.running = True
-
-    def play(self):
-        """starts the game and handles the restart logic"""
-        while True:
-            # run the main game loop
-            self.run()
-            if not self._ask_restart():
-                self.screen.bye()
-                break
-            # reset the game objects for further round
-            self.reset()
-
     def _ask_restart(self) -> bool:
         """prompts the player to restart the game"""
-        response: str = self.screen.textinput(
+        response: str = self.screen.show_prompt(
                 "Game over",
                 "Do you want to play further? Type \"y\" or \"n\": "
         )

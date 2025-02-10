@@ -1,6 +1,6 @@
 from turtle import Turtle
 from helpers import random_color, create_block_batch
-from screen import SCREEN_WIDTH
+from screen import GameScreen
 from typing import List, Tuple
 # importing the module single to be able to change color mode on module level to rgb
 import turtle
@@ -64,6 +64,7 @@ class BlockManager:
     """
     def __init__(
         self,
+        screen: GameScreen,
         speed: float = 0.2,
         distance: int = 5,
         block_batch_max: int = 3,
@@ -71,6 +72,9 @@ class BlockManager:
         block_batch_x_gap: float = 80,
         block_batch_y_gap: float = 25,
     ) -> None:
+        # screen object containing some relevant metadata, e.g. boundaries
+        self.screen = screen
+        # central container with all instantiated block objects from block class
         self.block_container: List[Block] = []
         # value for time.sleep in main game loop dictating game speed
         self.speed: float = speed
@@ -85,9 +89,9 @@ class BlockManager:
         # gap in px along y-axis between single block within a batch
         self.block_batch_y_gap: float = block_batch_y_gap
         # genesis x cor for new block batches; beyond the screen on the right side
-        self.x_genesis_cor: int = int((SCREEN_WIDTH / 2) + 20)
+        self.x_genesis_cor: int = int((screen.width / 2) + 20)
         # block going beyond this x cor (out of screen) are wrecked
-        self.x_wrecking_cor: int = int(-(SCREEN_WIDTH / 2) - 20)
+        self.x_wrecking_cor: int = int(-(screen.width / 2) - 20)
         # add first batch of blocks on initiating blocks manager
         self.add_blocks()
 
@@ -107,7 +111,8 @@ class BlockManager:
                 self.block_batch_min,
                 self.block_batch_max,
                 self.block_batch_y_gap,
-                self.x_genesis_cor
+                self.x_genesis_cor,
+                self.screen
             )
             self.render_blocks(block_batch)
 
