@@ -53,7 +53,7 @@ class Block:
 
 class BlockManager:
     """
-    - core game logic creating blocks, steering and removing them
+    - core logic creating blocks, steering and removing them
     - game iterations are dictated by screen updating, steered by the self.speed variable setting value for time.sleep
     - every game iteration it is checked, if a new batch of blocks is generated
     - a batch of blocks is distributed non-overlapping along the y-axis with identical x-coordinate
@@ -144,8 +144,10 @@ class BlockManager:
         self.block_batch_max = 3
         self.block_batch_min = 0
         self.speed = 0.2
+        self.block_batch_x_gap = 80
+        self.block_batch_y_gap = 25
 
-    def increase_difficulty(self, level) -> None:
+    def increase_difficulty(self, level: int) -> None:
         """ increase game difficulty when player levels up for delivered level"""
         self.speed *= 0.95
         if level >= 3:
