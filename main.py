@@ -5,6 +5,7 @@ import time
 from screen import GameScreen
 from turtle import Screen
 from helpers import check_collision, collision_animation
+from typing import Dict
 
 
 class Game:
@@ -20,6 +21,16 @@ class Game:
         # update screen initially
         self.screen.update_screen()
         self.running = True
+
+    def play(self) -> None:
+        """starts the game and handles the restart logic"""
+        while True:
+            # run the main game loop
+            self.run()
+            if not self._ask_restart():
+                break
+            # reset the game objects for further round
+            self.reset()
 
     def run(self) -> None:
         """
@@ -42,16 +53,6 @@ class Game:
             if self._player_reached_goal():
                 self._level_up()
 
-    def play(self) -> None:
-        """starts the game and handles the restart logic"""
-        while True:
-            # run the main game loop
-            self.run()
-            if not self._ask_restart():
-                break
-            # reset the game objects for further round
-            self.reset()
-
     def reset(self) -> None:
         """resets the game state for a new game session"""
         self.blocks.reset()
@@ -63,14 +64,14 @@ class Game:
 
     def _attach_controls(self) -> None:
         """attach event handlers to player on init game and restart game"""
-        self.screen.attach_event_listeners(
-            {
-                "Up": self.player.move_up,
-                "Down": self.player.move_down,
-                "Right": self.player.move_right,
-                "Left": self.player.move_left
-            }
-        )
+        keybindings: Dict = {
+            "Up": self.player.move_up,
+            "Down": self.player.move_down,
+            "Right": self.player.move_right,
+            "Left": self.player.move_left
+        }
+        # use dict as arg to bind keys
+        self.screen.attach_event_listeners(keybindings)
 
     def _update_game_state(self) -> None:
         """handles game state updates per frame (block movement, adding/removing blocks)"""

@@ -24,7 +24,6 @@ class Player:
     ) -> None:
         self._turtle_player = Turtle()
         self._turtle_player.shape("car.gif")
-        self._turtle_player.color("black")
         self._turtle_player.penup()
         self._turtle_player.goto(start_x, start_y)
         self._turtle_player.setheading(direction)
@@ -42,7 +41,8 @@ class Player:
 
     def move_up(self) -> None:
         """
-        moves the player upwards for the defined distance on clicking up key arrow
+        - moves the player upwards for the defined distance on clicking up key arrow
+        - no if-clause to prevent movements over top boundary; this is prevented by teleporting on crossing it
         """
         new_y: int = int(self._turtle_player.ycor()) + self.move_distance
         self._turtle_player.goto(int(self._turtle_player.xcor()), new_y)
@@ -87,22 +87,22 @@ class Player:
         self._turtle_player.shape("car.gif")
 
     def get_ycor(self) -> float:
-        """deliver the y-coordinate to outside class callees, since _car is private"""
+        """deliver the y-coordinate to outside class callees, since _turtle_player is private"""
         return self._turtle_player.ycor()
 
     def get_xcor(self) -> float:
-        """deliver the x-coordinate to outside class callees, since _car is private"""
+        """deliver the x-coordinate to outside class callees, since _turtle_player is private"""
         return self._turtle_player.xcor()
 
     def get_width(self) -> int:
-        """deliver width to outside class callees, since _car is private"""
+        """deliver width to outside class callees, since _turtle_player is private"""
         return self.width
 
     def get_height(self) -> int:
-        """deliver height to outside class callees, since _turtle is private"""
+        """deliver height to outside class callees, since _turtle_player is private"""
         return self.height
 
     def update_shape(self, shape) -> None:
-        """update player shape in case of collisions and keep _car private"""
+        """update player shape in case of collisions and keep _turtle_player private"""
         self._turtle_player.shape(shape)
 

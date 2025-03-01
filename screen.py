@@ -19,10 +19,10 @@ class GameScreen:
     - instead screen.update() is used manually within the game loop to refresh the screen and control game speed
     - x - y coordinate system -> when full width = 600, foremost left x-coordinate is -300, foremost right is 300
     boundaries:
-    - top: drawn threshold under screen top border; player teleports to bottom when crossing it; no cars appear there
-    - bottom: drawn threshold above screen bottom; player cannot move down before crossing it; no cars appear there
-    - left: player can't cross it; cars are wrecked when crossing it; added 2px space by testing
-    - right: player can't cross it; cars are generated beyond it; added 4px space by testing
+    - top: drawn threshold under screen top border; player teleports to bottom when crossing it; no cars appear above
+    - bottom: drawn threshold above screen bottom; player cannot move down before crossing it; no cars appear below
+    - left: player can't cross it; cars are wrecked when crossing it; added 2px space by testing for player shape
+    - right: player can't cross it; cars are generated beyond it; added 2px space by testing for player shape
     """
     def __init__(
         self,
@@ -32,6 +32,7 @@ class GameScreen:
     ) -> None:
         self.width: int = width
         self.height: int = height
+        self.title: str = title
         self.top_boundary: int = int((self.height / 2) - 50)
         self.bottom_boundary: int = int(-(self.height / 2) + 60)
         self.left_boundary: int = int(-(self.width / 2)) + 2
@@ -81,11 +82,6 @@ class GameScreen:
         self._turtle_screen.listen()
         for key, action in bindings.items():
             self._turtle_screen.onkey(action, key)
-
-        #self._turtle_screen.onkey(player.move_up, "Up")
-        #self._turtle_screen.onkey(player.move_down, "Down")
-        #self._turtle_screen.onkey(player.move_right, "Right")
-        #self._turtle_screen.onkey(player.move_left, "Left")
 
     def update_screen(self) -> None:
         """since auto screen update is deactivated by .tracer(0) in init, screen needs to be updated manually"""
