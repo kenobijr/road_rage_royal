@@ -1,6 +1,7 @@
 import sqlite3
 import logging
 from threading import Lock
+import os
 
 # name / path of highscore DB
 DEFAULT_DB_PATH: str = "highscore.db"
@@ -76,3 +77,7 @@ class HighscoreDB:
     def __del__(self):
         """ensures database connection is closed on object destruction"""
         self.close()
+
+    def remove_db_file(self):
+        """removes the local db file at given path; needed for testing"""
+        os.remove(self.db_pass)
