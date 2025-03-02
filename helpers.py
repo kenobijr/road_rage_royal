@@ -21,34 +21,35 @@ def random_color() -> Tuple[int, int, int]:
 
 
 def create_block_batch(
-        car_batch_min: int,
-        car_batch_max: int,
-        car_batch_y_gap: float,
+        block_batch_min: int,
+        block_batch_max: int,
+        block_batch_y_gap: float,
         x_genesis: int,
         screen: GameScreen
 ) -> List[Tuple[int, int]]:
     """
-    generate a list of tuples with random y-coordinates & constant x-genesis coordinate for a car batch ensuring that:
+    generate a list of tuples with random y-coordinates & constant x-genesis coordinate for a block batch ensuring that:
         1. there are no duplicate y-coordinates
         2. the y-coordinates are spaced apart to prevent overlapping
-        3. the amount of cars per batch is a randint between car_batch_min and car_batch_max
+        3. the amount of blocks per batch is a randint between block_batch_min and block_batch_max
         4. every single y-coordinate is randomly generated along the y-axis between bottom and top screen
     args:
-    - "car_batch_min": int defining the bottom boundary of amount of cars in one batch
-    - "car_batch_max": int defining the upper boundary of amount of cars in one batch
-    - "car_batch_y_gap": min. space between every y-coordinates
-    - "x_genesis": x-genesis-coordinate right beyond the visible screen where the cars are generated
+    - "block_batch_min": int defining the bottom boundary of amount of blocks in one batch
+    - "block_batch_max": int defining the upper boundary of amount of blocks in one batch
+    - "block_batch_y_gap": min. space between every y-coordinates
+    - "x_genesis": x-genesis-coordinate right beyond the visible screen where the blocks are generated
+    - "screen": instance of GameScreen
     return:
     - a list of tuples with car coordinates for the batch
     """
-    # define the amount of cars to be generated for the batch randomly within the range
-    amount_cars: int = randint(car_batch_min, car_batch_max)
+    # define the amount of blocks to be generated for the batch randomly within the range
+    amount_blocks: int = randint(block_batch_min, block_batch_max)
     # create list of all possible y coordinates
-    possible_y_coordinates = list(range(screen.bottom_boundary + 12, screen.top_boundary - 12, int(car_batch_y_gap)))
+    possible_y_coordinates = list(range(screen.bottom_boundary + 12, screen.top_boundary - 12, int(block_batch_y_gap)))
     # Randomly sample the required amount; ensure no more samples are drawn than possible y-coordinates
-    car_batch_y_coordinates = random.sample(possible_y_coordinates, min(amount_cars, len(possible_y_coordinates)))
+    block_batch_y_coordinates = random.sample(possible_y_coordinates, min(amount_blocks, len(possible_y_coordinates)))
     # using the y-coordinates create the tuples with constant x-genesis-coordinate
-    return [(x_genesis, y_cor) for y_cor in car_batch_y_coordinates]
+    return [(x_genesis, y_cor) for y_cor in block_batch_y_coordinates]
 
 
 def check_collision(player: Player, block_container) -> bool:
