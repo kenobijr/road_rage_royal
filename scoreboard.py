@@ -49,9 +49,9 @@ class Highscore:
         file_path: str = "highscore.db"
     ) -> None:
         # initiate & set up sqlite3 DB initially with default value 1 if not already existing
-        self.highscore_db = HighscoreDB(file_path)
+        self.db = HighscoreDB(file_path)
         # reads highscore from DB
-        self.highscore = self.highscore_db.get_highscore()
+        self.highscore = self.db.get_highscore()
         self.text_alignment = text_alignment
         self.font_type = font_type
         self._turtle = Turtle()
@@ -63,7 +63,7 @@ class Highscore:
     def update_highscore(self, level):
         """on new highscores update DB and UI"""
         if level > self.highscore:
-            self.highscore_db.update_highscore(level)
+            self.db.update_highscore(level)
             self.highscore = level
             self._turtle.clear()
             self.render_highscore()

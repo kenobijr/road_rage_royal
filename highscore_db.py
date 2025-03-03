@@ -3,9 +3,6 @@ import logging
 from threading import Lock
 import os
 
-# name / path of highscore DB
-DEFAULT_DB_PATH: str = "highscore.db"
-
 
 class HighscoreDB:
     """singleton database class for managing the highscore with sqlite3 on one instance"""
@@ -14,14 +11,14 @@ class HighscoreDB:
     # ensures single thread for DB connection
     _lock = Lock()
 
-    def __new__(cls, db_pass: str = DEFAULT_DB_PATH):
+    def __new__(cls, db_path: str = "highscore.db"):
         """calling __new__ special method (overriding __init__) to ensure only one instance is created"""
         with cls._lock:
             # create instance only if no one exists yet
             if cls._instance is None:
                 # call parent class constructor with super() and default object creation method with __new__(cls)
                 cls._instance = super().__new__(cls)
-                cls._instance.db_pass = db_pass
+                cls._instance.db_pass = db_path
                 # trigger persisted connection to the DB; check_same_thread flag to allow multiple threads to sqlite db
                 cls._instance._connection = sqlite3.connect(cls._instance.db_pass, check_same_thread=False)
                 # init the db on the object
@@ -78,6 +75,11 @@ class HighscoreDB:
         """ensures database connection is closed on object destruction"""
         self.close()
 
-    def remove_db_file(self):
-        """removes the local db file at given path; needed for testing"""
-        os.remove(self.db_pass)
+    def reset_db(self):
+        """removes the local db file at given path; needed for testing; resets the instance"""
+        # closes the sqlite connection
+        self.close()
+        if os.path.isfile(self.db_pass):
+            os.remove(self.db_pass)
+        # Now clear the singleton so a new call re-creates it fresh
+        type(self)._instance = None
