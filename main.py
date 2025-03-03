@@ -14,8 +14,8 @@ class Game:
         self.screen: Screen = GameScreen()
         self.player: Player = Player(self.screen)
         self.blocks: BlockManager = BlockManager(self.screen)
-        self.scoreboard: Scoreboard = Scoreboard(-70, 257)
-        self.highscore: Highscore = Highscore(-287, 260)
+        self.scoreboard: Scoreboard = Scoreboard()
+        self.highscore: Highscore = Highscore()
         # add event listeners for keys as dict with bound methods to player object
         self._attach_controls()
         # update screen initially
