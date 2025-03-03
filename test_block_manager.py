@@ -15,29 +15,37 @@ def test_Block_init_turtle():
     assert block._turtle.pos() == (0.0, 0.0)
 
 
-def test_Block_move():
-    """test the moving function to move a single block one time"""
-    screen = GameScreen()
-    blocks = BlockManager(screen)
-    block = Block(x=0, y=0)
-    # move it one time by the distance saved in BlockManager
-    block.move(blocks.distance)
-    assert block._turtle.pos() == (-5.0, 0.0)
+@pytest.mark.parametrize(
+    "initial_x, initial_y, move_distance, expected_x, expected_y",
+    [
+        (0, 0, 5, -5, 0),
+        (100, 50, 10, 90, 50),
+        (20, 20, 20, 0, 20)
+    ]
+)
+def test_Block_move_params(initial_x, initial_y, move_distance, expected_x, expected_y):
+    """parametrized test to move a single block one time for multiple starting positions"""
+    block = Block(x=initial_x, y=initial_y)
+    block.move(move_distance)
+    assert block._turtle.pos() == (expected_x, expected_y)
 
 
-def test_Block_off_screen():
-    """test if block is off the screen for a given x-wrecking-coordinate: """
+@pytest.mark.parametrize(
+    "initial_x, initial_y, expected_result",
+    [
+        (0, 0, False),
+        (-320, 0, False),
+        (150, 50, False),
+        (-321, 0, True),
+        (-400, -50, True)
+    ]
+)
+def test_Block_off_screen_params(initial_x, initial_y, expected_result):
+    """parametrized test if block is off the screen for multiple start positions and same x-wrecking-coordinate"""
     screen = GameScreen()
     blocks = BlockManager(screen)
-    block = Block(x=0, y=0)
-    # test if False is returned for on screen block with x-wrecking-coordinate saved in BlockManager
-    assert not block.is_off_screen(blocks.x_wrecking_cor)
-    # test exactly on the border
-    block._turtle.goto(-320, 0)
-    assert not block.is_off_screen(blocks.x_wrecking_cor)
-    # test if True for off_screen
-    block._turtle.goto(-321, 0)
-    assert block.is_off_screen(blocks.x_wrecking_cor)
+    block = Block(initial_x, initial_y)
+    assert block.is_off_screen(blocks.x_wrecking_cor) == expected_result
 
 
 def test_Block_getters():
@@ -67,7 +75,7 @@ def test_BlockManager_init_attributes():
 
 def test_BlockManager_add_blocks():
     """
-    test add_blocks method for following cases:
+    test add_blocks method (on default 0-3 added) for following cases:
     1. block container is empty
     2. block container is not empty and no additional blocks have to be generated
     3. block container is not empty and additional blocks have to be generated
@@ -80,7 +88,6 @@ def test_BlockManager_add_blocks():
     assert 0 <= len(blocks.block_container) <= 3
     # case 2: empty block container and add one block object with x-coordinate preventing more blocks to be generated
     blocks.block_container.clear()
-    # create one block: border is 240: 320 x_genesis_cor - 80 block_batch_x_gap
     blocks.render_blocks([(240, 0)])
     blocks.add_blocks()
     assert len(blocks.block_container) == 1
@@ -92,13 +99,14 @@ def test_BlockManager_add_blocks():
 
 
 def test_BlockManager_render_blocks():
-    """test render block method"""
+    """test render block method; with missing argument and with 2 blocks to render"""
     screen = GameScreen()
     blocks = BlockManager(screen)
     blocks.block_container.clear()
     # test with missing argument
     with pytest.raises(TypeError):
         blocks.render_blocks()
+    # test with 2 blocks to render
     blocks.render_blocks([(0, 0), (50, 100)])
     assert len(blocks.block_container) == 2
     assert blocks.block_container[0]._turtle.shape() == "square"
@@ -153,9 +161,25 @@ def test_BlockManager_reset():
     assert blocks.speed == 0.2
 
 
-def test_BlockManager_increase_difficulty():
+@pytest.mark.parametrize(
+    "level, expected_speed, expected_batch_min, expected_batch_max, expected_batch_x_gap, expected_batch_y_gap",
+    [
+        (2, 0.19, 0, 3, 80, 25),
+        (4, 0.19, 0, 4, 80, 25),
+        (5, 0.19, 0, 4, 76, 23.75),
+        (77, 0.19, 1, 4, 76, 23.75),
+    ]
+)
+def test_BlockManager_increase_difficulty_params(
+    level,
+    expected_speed,
+    expected_batch_min,
+    expected_batch_max,
+    expected_batch_x_gap,
+    expected_batch_y_gap
+):
     """
-    test increasing of difficulty for 4 cases depending on the level delivered as param:
+    parameterized test increasing difficulty for 4 cases depending on the level delivered as param:
     case 1: level 1-2
     case 2: level 3-4
     case 3: level 5-6
@@ -163,35 +187,9 @@ def test_BlockManager_increase_difficulty():
     """
     screen = GameScreen()
     blocks = BlockManager(screen)
-    # case 1
-    blocks.increase_difficulty(2)
-    assert blocks.speed == (0.2 * 0.95)
-    # no change may happen in this level range
-    assert blocks.block_batch_max == 3
-    # case 2
-    blocks.reset()
-    blocks.increase_difficulty(4)
-    assert blocks.speed == (0.2 * 0.95)
-    assert blocks.block_batch_max == 4
-    # no change may happen in this level range
-    assert blocks.block_batch_x_gap == 80
-    # case 3
-    blocks.reset()
-    blocks.increase_difficulty(5)
-    assert blocks.speed == (0.2 * 0.95)
-    assert blocks.block_batch_max == 4
-    assert blocks.block_batch_x_gap == (80 * 0.95)
-    assert blocks.block_batch_y_gap == (25 * 0.95)
-    # no change may happen in this level range
-    assert blocks.block_batch_min == 0
-    # case 4
-    blocks.reset()
-    blocks.increase_difficulty(77)
-    assert blocks.speed == (0.2 * 0.95)
-    assert blocks.block_batch_max == 4
-    assert blocks.block_batch_x_gap == (80 * 0.95)
-    assert blocks.block_batch_y_gap == (25 * 0.95)
-    assert blocks.block_batch_min == 1
-
-
-
+    blocks.increase_difficulty(level)
+    assert blocks.speed == expected_speed
+    assert blocks.block_batch_min == expected_batch_min
+    assert blocks.block_batch_max == expected_batch_max
+    assert blocks.block_batch_x_gap == expected_batch_x_gap
+    assert blocks.block_batch_y_gap == expected_batch_y_gap

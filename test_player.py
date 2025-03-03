@@ -53,23 +53,13 @@ def test_Player_init_player_turtle():
 @pytest.mark.parametrize(
     "initial_x, initial_y, move_method, expected_x, expected_y",
     [
-        # up
         (0, 0, "move_up", 0, 10),
-        # right
         (0, 10, "move_right", 10, 10),
-        # down
         (10, 10, "move_down", 10, 0),
-        # left
         (10, 0, "move_left", 0, 0)
     ]
 )
-def test_Player_valid_movements_params(
-    initial_x,
-    initial_y,
-    move_method,
-    expected_x,
-    expected_y
-):
+def test_Player_valid_movements_params(initial_x, initial_y, move_method, expected_x, expected_y):
     """
     single parametrized test that tries different movement scenarios:
     1. sets player's turtle to (initial_x, initial_y).
@@ -94,13 +84,7 @@ def test_Player_valid_movements_params(
         (-298, 0, "move_left", -298, 0),
     ]
 )
-def test_Player_invalid_movements_params(
-    initial_x,
-    initial_y,
-    move_method,
-    expected_x,
-    expected_y
-):
+def test_Player_invalid_movements_params(initial_x, initial_y, move_method, expected_x, expected_y):
     """
     - parametrized test moving the player turtle to cross boundaries, which is not allowed
     - movements over top boundary not checked; this is prevented by teleporting player on crossing it
