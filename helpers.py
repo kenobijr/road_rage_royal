@@ -40,7 +40,7 @@ def create_block_batch(
     - "x_genesis": x-genesis-coordinate right beyond the visible screen where the blocks are generated
     - "screen": instance of GameScreen
     return:
-    - a list of tuples with car coordinates for the batch
+    - a list of tuples with block coordinates for the batch
     """
     # define the amount of blocks to be generated for the batch randomly within the range
     amount_blocks: int = randint(block_batch_min, block_batch_max)
