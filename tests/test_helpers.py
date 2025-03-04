@@ -85,7 +85,7 @@ def test_collision_animation():
     screen = GameScreen()
     player = Player(screen)
     # check for correct player shape before collision animation
-    assert player._turtle_player.shape() == "car.gif"
+    assert player._turtle_player.shape() == "assets/car.gif"
     # check for updated shape after collision executed
     collision_animation(player, screen)
-    assert player._turtle_player.shape() == "explosion.gif"
+    assert player._turtle_player.shape() == "assets/explosion.gif"

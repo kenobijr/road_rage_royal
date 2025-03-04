@@ -44,7 +44,7 @@ def test_Player_init_player_turtle():
     screen = GameScreen()
     player = Player(screen)
     assert hasattr(player, "_turtle_player")
-    assert player._turtle_player.shape() == "car.gif"
+    assert player._turtle_player.shape() == "assets/car.gif"
     assert not player._turtle_player.isdown()
     assert player._turtle_player.heading() == 90.0
     assert player._turtle_player.pos() == (0.0, -265.0)
@@ -114,11 +114,11 @@ def test_Player_reset():
     player = Player(screen)
     # change player pos & shape
     player._turtle_player.goto(0, 0)
-    player._turtle_player.shape("explosion.gif")
+    player._turtle_player.shape("assets/explosion.gif")
     # execute reset & test it
     player.reset()
     assert player._turtle_player.pos() == (0.0, -265.0)
-    assert player._turtle_player.shape() == "car.gif"
+    assert player._turtle_player.shape() == "assets/car.gif"
 
 
 def test_Player_getters():
@@ -135,5 +135,5 @@ def test_Player_update_shape():
     """test changing the player shape"""
     screen = GameScreen()
     player = Player(screen)
-    player.update_shape("explosion.gif")
-    assert player._turtle_player.shape() == "explosion.gif"
+    player.update_shape("assets/explosion.gif")
+    assert player._turtle_player.shape() == "assets/explosion.gif"
