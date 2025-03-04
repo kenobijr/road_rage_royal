@@ -109,7 +109,7 @@ def test_Player_reset_position():
 
 
 def test_Player_reset():
-    """test teleport and reset player shape after collision and player opts for further round"""
+    """test teleport and reset player shape after collision and player opts for further round """
     screen = GameScreen()
     player = Player(screen)
     # change player pos & shape
