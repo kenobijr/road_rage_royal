@@ -1,17 +1,17 @@
-from main import Game
-from screen import GameScreen
-from player import Player
-from block_manager import BlockManager
-from scoreboard import Scoreboard, Highscore
+from src.main import Game
+from src.screen import GameScreen
+from src.player import Player
+from src.block_manager import BlockManager
+from src.scoreboard import Scoreboard, Highscore
 from unittest.mock import patch
 import pytest
 
 
-@patch("player.Turtle")
-@patch("screen.Turtle")
-@patch("screen.Screen")
-@patch("scoreboard.Turtle")
-@patch("block_manager.Turtle")
+@patch("src.player.Turtle")
+@patch("src.screen.Turtle")
+@patch("src.screen.Screen")
+@patch("src.scoreboard.Turtle")
+@patch("src.block_manager.Turtle")
 def test_Game_init(mock_block_turtle, mock_score_turtle, mock_screen_screen, mock_screen_turtle, mock_player_turtle):
     """test if game is initialised with correct attributes """
     new_game = Game()
@@ -28,9 +28,9 @@ def test_Game_init(mock_block_turtle, mock_score_turtle, mock_screen_screen, moc
     assert new_game.running
 
 
-@patch("screen.Turtle")
-@patch("scoreboard.Turtle")
-@patch("block_manager.Turtle")
+@patch("src.screen.Turtle")
+@patch("src.scoreboard.Turtle")
+@patch("src.block_manager.Turtle")
 def test_Game_level_up(mock_block_turtle, mock_score_turtle, mock_screen_turtle):
     """test if level up form 1 to 2 function is working correctly; omit testing highscore"""
     new_game = Game()

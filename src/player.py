@@ -1,5 +1,5 @@
+from src.screen import GameScreen
 from turtle import Turtle
-from screen import GameScreen
 
 
 class Player:
@@ -23,7 +23,7 @@ class Player:
         move_distance: int = 10
     ) -> None:
         self._turtle_player = Turtle()
-        self._turtle_player.shape("car.gif")
+        self._turtle_player.shape("assets/car.gif")
         self._turtle_player.penup()
         self._turtle_player.goto(start_x, start_y)
         self._turtle_player.setheading(direction)
@@ -84,7 +84,7 @@ class Player:
     def reset(self) -> None:
         """reset player position and shape after collision and player wants further round"""
         self.reset_position()
-        self._turtle_player.shape("car.gif")
+        self._turtle_player.shape("assets/car.gif")
 
     def get_ycor(self) -> float:
         """deliver the y-coordinate to outside class callees, since _turtle_player is private"""

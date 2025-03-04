@@ -1,5 +1,5 @@
-from screen import GameScreen
-from block_manager import Block, BlockManager
+from src.screen import GameScreen
+from src.block_manager import Block, BlockManager
 import pytest
 
 

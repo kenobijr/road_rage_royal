@@ -1,7 +1,7 @@
-from helpers import random_color, create_block_batch, check_collision, collision_animation
-from screen import GameScreen
-from block_manager import BlockManager
-from player import Player
+from src.screen import GameScreen
+from src.block_manager import BlockManager
+from src.player import Player
+from src.helpers import random_color, create_block_batch, check_collision, collision_animation
 import pytest
 
 

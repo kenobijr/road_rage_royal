@@ -1,5 +1,5 @@
+from src.highscore_db import HighscoreDB
 from turtle import Turtle
-from highscore_db import HighscoreDB
 
 
 class Scoreboard:
@@ -46,7 +46,7 @@ class Highscore:
         start_y: int = 260,
         text_alignment: str = "left",
         font_type: str = "Courier",
-        file_path: str = "highscore.db"
+        file_path: str = "data/prod.highscore.db"
     ) -> None:
         # initiate & set up sqlite3 DB initially with default value 1 if not already existing
         self.db = HighscoreDB(file_path)

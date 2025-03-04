@@ -1,7 +1,7 @@
+from src.screen import GameScreen
+from src.player import Player
 import pytest
 from unittest.mock import patch
-from screen import GameScreen
-from player import Player
 
 
 @pytest.fixture
@@ -12,9 +12,9 @@ def mock_turtle_and_screen():
     - works only for testcases NOT relying on positional / shape logic saved at Turtle objects
     - all these cases must use the real classes / objects to work out, even when triggering the GUI
     """
-    with patch("player.Turtle") as mock_player_turtle_class, \
-         patch("screen.Turtle") as mock_screen_turtle_class, \
-         patch("screen.Screen") as mock_screen_screen_class:
+    with patch("src.player.Turtle") as mock_player_turtle_class, \
+         patch("src.screen.Turtle") as mock_screen_turtle_class, \
+         patch("src.screen.Screen") as mock_screen_screen_class:
         yield mock_player_turtle_class, mock_screen_turtle_class, mock_screen_screen_class
 
 

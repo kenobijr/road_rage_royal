@@ -1,10 +1,10 @@
-from player import Player
-from block_manager import BlockManager
-from scoreboard import Scoreboard, Highscore
+from src.player import Player
+from src.block_manager import BlockManager
+from src.scoreboard import Scoreboard, Highscore
+from src.screen import GameScreen
+from src.helpers import check_collision, collision_animation
 import time
-from screen import GameScreen
 from turtle import Screen
-from helpers import check_collision, collision_animation
 from typing import Dict
 
 

@@ -3,8 +3,8 @@ from typing import Optional, Dict
 
 # custom shapes for turtle objects need to be registered to the screen
 SHAPE_PATHS = [
-    "car.gif",
-    "explosion.gif"
+    "assets/car.gif",
+    "assets/explosion.gif"
 ]
 
 TEXT_ALIGNMENT: str = "left"

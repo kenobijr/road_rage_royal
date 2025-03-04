@@ -1,7 +1,7 @@
-from turtle import Turtle
-from helpers import random_color, create_block_batch
-from screen import GameScreen
+from src.screen import GameScreen
+from src.helpers import random_color, create_block_batch
 from typing import List, Tuple
+from turtle import Turtle
 # importing the module single to be able to change color mode on module level to rgb
 import turtle
 turtle.colormode(255)

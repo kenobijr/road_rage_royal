@@ -11,7 +11,7 @@ class HighscoreDB:
     # ensures single thread for DB connection
     _lock = Lock()
 
-    def __new__(cls, db_path: str = "highscore.db"):
+    def __new__(cls, db_path: str = "data/prod.highscore.db"):
         """calling __new__ special method (overriding __init__) to ensure only one instance is created"""
         with cls._lock:
             # create instance only if no one exists yet

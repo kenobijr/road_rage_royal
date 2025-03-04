@@ -1,7 +1,6 @@
-import random
-from random import randint
-from screen import GameScreen
-from player import Player
+from src.screen import GameScreen
+from src.player import Player
+from random import randint, sample
 from typing import List, Tuple
 import time
 # needed for fine-tuning for collision detection function (visible crash)
@@ -47,7 +46,7 @@ def create_block_batch(
     # create list of all possible y coordinates
     possible_y_coordinates = list(range(screen.bottom_boundary + 12, screen.top_boundary - 12, int(block_batch_y_gap)))
     # Randomly sample the required amount; ensure no more samples are drawn than possible y-coordinates
-    block_batch_y_coordinates = random.sample(possible_y_coordinates, min(amount_blocks, len(possible_y_coordinates)))
+    block_batch_y_coordinates = sample(possible_y_coordinates, min(amount_blocks, len(possible_y_coordinates)))
     # using the y-coordinates create the tuples with constant x-genesis-coordinate
     return [(x_genesis, y_cor) for y_cor in block_batch_y_coordinates]
 
@@ -86,6 +85,6 @@ def check_collision(player: Player, block_container) -> bool:
 
 def collision_animation(player: Player, screen: GameScreen) -> None:
     """replaces player with an explosion effect for 0.5s"""
-    player.update_shape("explosion.gif")
+    player.update_shape("assets/explosion.gif")
     screen.update_screen()
     time.sleep(1)
