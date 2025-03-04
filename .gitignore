@@ -15,7 +15,8 @@ __pychache__/
 .idea/
 
 # sqlite3 highscore db
-highscore.db
+prod.highscore.db
+test.highscore.db
 
 # macOS system files
 .DS_Store
